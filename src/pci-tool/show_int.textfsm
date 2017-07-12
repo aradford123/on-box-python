@@ -1,0 +1,8 @@
+Value Interface (\S*)
+Value Admin (\S*)
+Value Input (\S*)
+Value Output (\S*)
+
+Start
+	^${Interface} is ${Admin}
+	^\s*Last input ${Input}, output ${Output}, -> Record
