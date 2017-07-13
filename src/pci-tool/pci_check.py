@@ -28,7 +28,6 @@ def is_idle(input_time, output_time):
 
 def log(message, severity):
     print(message)
-
     cli('send log %d "%s"' % (severity, message))
 
 
@@ -66,6 +65,6 @@ if __name__ == "__main__":
                    help="Apply commands to device.  no longer run in testing mode.")
 
     args = parser.parse_args()
-    template = open("/flash/gs_script/pci-tool/show_int.textfsm")
+    template = open("/flash/gs_script/src/pci-tool/show_int.textfsm")
     re_table = textfsm.TextFSM(template)
     process(re_table, args.apply)
