@@ -29,7 +29,10 @@ def is_idle(input_time, output_time):
 def log(message, severity):
     print(message)
     cli('send log %d "%s"' % (severity, message))
-
+    sparktoken = os.environ.get("SPARKTOKEN")
+    if sparktoken is not None:
+        roomId = getRoomId("PCI", sparktoken)
+        postMessage(message, roomId, sparktoken)
 
 def apply_commands(commands):
     response = configure(commands)
