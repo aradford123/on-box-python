@@ -9,4 +9,17 @@ event manager policy config_check.py
 '''
 
 import eem
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
+from utils.spark_utils import getRoomId, postMessage
+
+def logSpark(message):
+    sparktoken = os.environ.get("SPARKTOKEN")
+    if sparktoken is not None:
+        roomId = getRoomId("Sanity", sparktoken)
+        postMessage(message, roomId, sparktoken)
+
+
 eem.action_syslog("helloWorld")
+logSpark("hello")
