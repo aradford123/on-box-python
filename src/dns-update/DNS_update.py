@@ -22,7 +22,7 @@ UPDATE_SCRIPT_FIRING_COMMANDS = """
 event manager applet DNS_update
  event timer countdown time %s
  action 1.0 cli command "enable"
- action 1.1 cli command "guestshell run python bootflash:flash/gs_script/src/dns-update %s
+ action 1.1 cli command "guestshell run python bootflash:flash/gs_script/src/dns-update/DNS_update.py %s
 """
 
 from cli import cli
