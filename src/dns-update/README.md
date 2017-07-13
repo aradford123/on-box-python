@@ -7,7 +7,11 @@ sudo -E pip install dnspython
 
 ```
 
-install the script in the /flash directory
+install the script in the /flash/gs_script/src/dns_update directory.
+If you are doing a git clone, this is easy.
+```buildoutcfg
+git clone https://github.com/aradford123/on-box-python.git /flash/gs_script
+```
 
 Run as (the domain names below are just examples):
 ```buildoutcfg
