@@ -11,7 +11,7 @@ event manager policy config_check.py
 import eem
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
+sys.path.append("/flash/gs_script/src")
 from utils.spark_utils import getRoomId, postMessage
 
 def logSpark(message):
