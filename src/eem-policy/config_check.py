@@ -4,6 +4,7 @@
 # need to copy the script to flash:
 '''
 !need to have the following config in IOS
+event manager directory user policy flash:gs_script/src/eem-policy
 event manager directory user policy flash:
 event manager policy config_check.py
 '''
@@ -22,4 +23,4 @@ def logSpark(message):
 
 
 eem.action_syslog("helloWorld")
-logSpark("hello")
+logSpark("helloWorld")
