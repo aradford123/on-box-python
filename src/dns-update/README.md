@@ -11,7 +11,7 @@ install the script in the /flash directory
 
 Run as (the domain names below are just examples):
 ```buildoutcfg
-/flash/DNS_update.py cisco.com amazon.com
+/flash/gs_script/src/dns-update/DNS_update.py cisco.com amazon.com
 ```
 
 The script will update an named access-list called "canary_ip_in" (this can be changed)
