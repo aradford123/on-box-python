@@ -1,5 +1,5 @@
 import requests
-
+from cli import cli
 SPARK_API='https://api.ciscospark.com/v1/'
 
 
@@ -31,13 +31,17 @@ def getRoomId(roomName, token):
     return room_id
 
 def postMessage(message, roomId, token):
+    try:
+        hostname = cli("show run | inc hostname").split()[1]
+    except IndexError:
+        raise ValueError("Cannot get device hostname")
 
     url = SPARK_API + 'messages'
     HEADERS = {
         'authorization': token,
         'content-type': 'application/json'
     }
-    payload = {'roomId': roomId, 'markdown': message}
+    payload = {'roomId': roomId, 'markdown': hostname + message}
     r = requests.request(
         'POST', url, json=payload, headers=HEADERS)
     r.raise_for_status()
