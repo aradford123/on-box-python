@@ -6,7 +6,12 @@
 !need to have the following config in IOS
 event manager directory user policy flash:
 event manager directory user policy flash:gs_script/src/eem-policy
+
+do guestshell run bootflash:gs_script/utils/update_git.sh
+
 do copy flash:gs_script/src/eem-policy/config_check.py flash:
+
+Y
 no event manager policy config_check.py
 event manager policy config_check.py
 '''
@@ -24,5 +29,5 @@ def logSpark(message):
         postMessage(message, roomId, sparktoken)
 
 
-eem.action_syslog("helloWorld")
-logSpark("helloWorld!")
+eem.action_syslog("config changed")
+logSpark("config changed")
