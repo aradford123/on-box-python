@@ -2,11 +2,15 @@
 from __future__ import print_function
 import jtextfsm as textfsm
 from cli import cli, configure
-
 import re
-import sys
 import time
 from argparse import ArgumentParser
+import sys
+import os
+#change path to allow import from parent directory
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
+from utils.spark_utils import getRoomId, postMessage
+
 
 
 def is_idle_value(string):
