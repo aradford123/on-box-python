@@ -21,7 +21,7 @@ event manager policy config_check.py
 import eem
 import os
 import sys
-import cli
+from cli import cli
 import re
 sys.path.append("/flash/gs_script/src")
 from utils.spark_utils import getRoomId, postMessage
@@ -46,11 +46,13 @@ def get_diff():
     # first time  there will be no backup to compare to
     if os.path.exists(PY_BACKUP):
         diffs = cli('show archive config diff {bak} system:running-config'.format(bak=BACKUP))
+        print diffs
         if 'No changes were found' in diffs:
+            eem.action_syslog('No changes',priority=5)
             return
         diff_lines = re.split(r'\r?\n', diffs)
         msg = 'Configuration differences between the running config and last backup:\n'
-        msg += '```{}```'.format('\n'.join(diff_lines[:-1]))
+        msg += '``{}``'.format('\n'.join(diff_lines[:-1]))
         logSpark(msg)
     create_backup()
 
@@ -61,7 +63,7 @@ def main():
     try:
         get_diff()
     except IOError as e:
-        eem.action_syslog(e)
+        eem.action_syslog(e, priority=3)
 
 if __name__ == "__main__":
     main()
