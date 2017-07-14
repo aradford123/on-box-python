@@ -41,7 +41,7 @@ def postMessage(message, roomId, token):
         'authorization': token,
         'content-type': 'application/json'
     }
-    payload = {'roomId': roomId, 'markdown': '``{host}: {mess}  ``'.format(host=hostname, mess=message)}
+    payload = {'roomId': roomId, 'markdown': '`{host}: {mess}  `'.format(host=hostname, mess=message)}
     print payload
     r = requests.request(
         'POST', url, json=payload, headers=HEADERS)
