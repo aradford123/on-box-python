@@ -32,7 +32,7 @@ def log(message, severity):
     sparktoken = os.environ.get("SPARKTOKEN")
     if sparktoken is not None:
         roomId = getRoomId("PCI", sparktoken)
-        postMessage(message, roomId, sparktoken)
+        postMessage('`' + message + '`', roomId, sparktoken)
 
 def apply_commands(commands):
     response = configure(commands)
