@@ -58,7 +58,7 @@ def get_diff():
 
 def main():
     #eem.action_syslog("config changed")
-    logSpark('config changed')
+    logSpark('config changed\nsomething')
     try:
         get_diff()
     except IOError as e:
