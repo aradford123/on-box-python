@@ -28,6 +28,9 @@ def logSpark(message):
         roomId = getRoomId("Sanity", sparktoken)
         postMessage(message, roomId, sparktoken)
 
+def main():
+    eem.action_syslog("config changed")
+    logSpark("config changed")
 
-eem.action_syslog("config changed")
-logSpark("config changed")
+if __name__ == "__main__":
+    main()
