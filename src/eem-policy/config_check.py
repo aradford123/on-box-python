@@ -38,7 +38,12 @@ def logSpark(message):
         postMessage(message, roomId, sparktoken)
 
 def sanity():
+    '''
+    Sanity check to see if device is working properly.   quick check of an IP Address, but could be much more
+    :return:
+    '''
     result = cli('ping vrf Mgmt-vrf ip 10.66.104.111')
+    eem.action_syslog('Sanity' + result, priority=3)
     return False if '0/5' in result else True
 
 def create_backup():
