@@ -46,13 +46,12 @@ def get_diff():
     # first time  there will be no backup to compare to
     if os.path.exists(PY_BACKUP):
         diffs = cli('show archive config diff {bak} system:running-config'.format(bak=BACKUP))
-        print diffs
         if 'No changes were found' in diffs:
             eem.action_syslog('No changes',priority=5)
             return
         diff_lines = re.split(r'\r?\n', diffs)
         msg = 'Configuration differences between the running config and last backup:\n'
-        msg += '``{}``'.format('\n'.join(diff_lines[:-1]))
+        msg += '{}'.format('\n'.join(diff_lines[:-1]))
         logSpark(msg)
     create_backup()
 
