@@ -40,7 +40,7 @@ def apply_commands(commands):
     response = configure(commands)
     for r in response:
         log(r.__str__(), 5)
-    spark('\n'.join([r for r in response]))
+    spark('\n'.join([r.__str__() for r in response]))
 
 def process(re_table, apply_change):
     exec_commands = []
