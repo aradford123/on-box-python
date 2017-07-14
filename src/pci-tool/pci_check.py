@@ -29,15 +29,18 @@ def is_idle(input_time, output_time):
 def log(message, severity):
     print(message)
     cli('send log %d "%s"' % (severity, message))
+
+def spark(message):
     sparktoken = os.environ.get("SPARKTOKEN")
     if sparktoken is not None:
         roomId = getRoomId("PCI", sparktoken)
-        postMessage('`' + message + '`', roomId, sparktoken)
+        postMessage('```' + message +'\n```', roomId, sparktoken)
 
 def apply_commands(commands):
     response = configure(commands)
     for r in response:
         log(r.__str__(), 5)
+    spark('\n'.join([r for r in response]))
 
 def process(re_table, apply_change):
     exec_commands = []
