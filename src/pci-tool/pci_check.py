@@ -34,7 +34,7 @@ def spark(message):
     sparktoken = os.environ.get("SPARKTOKEN")
     if sparktoken is not None:
         roomId = getRoomId("PCI", sparktoken)
-        postMessage('```' + message +'\n```', roomId, sparktoken)
+        postMessage('```\n' + message +'\n```', roomId, sparktoken)
 
 def apply_commands(commands):
     response = configure(commands)
