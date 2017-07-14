@@ -37,6 +37,10 @@ def logSpark(message):
         roomId = getRoomId("Sanity", sparktoken)
         postMessage(message, roomId, sparktoken)
 
+def sanity():
+    result = cli('ping vrf Mgmt-vrf ip 10.66.104.111')
+    return False if '0/5' in result else True
+
 def create_backup():
     result = cli('copy run {bak}'.format(bak=BACKUP))
     if not "copied " in result:
@@ -59,6 +63,9 @@ def get_diff():
 def main():
     #eem.action_syslog("config changed")
     #logSpark('config changed')
+    if not sanity() and os.path.exists(PY_BACKUP):
+        result = cli('configure replace {bak} force'.format(bak=BAK))
+        eem.action_syslog(result, priority=3)
     try:
         get_diff()
     except IOError as e:
