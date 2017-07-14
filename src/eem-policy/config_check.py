@@ -51,14 +51,14 @@ def get_diff():
             return
         diff_lines = re.split(r'\r?\n', diffs)
         msg = 'Configuration differences between the running config and last backup:\n'
-        msg += '``` {} ```'.format('\n'.join(diff_lines[:-1]))
+        msg += '``` {} \n```'.format('\n'.join(diff_lines[:-1]))
         logSpark(msg)
     create_backup()
 
 
 def main():
     #eem.action_syslog("config changed")
-    logSpark('config changed\nsomething')
+    #logSpark('config changed')
     try:
         get_diff()
     except IOError as e:
