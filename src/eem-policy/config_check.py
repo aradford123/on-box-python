@@ -64,8 +64,9 @@ def main():
     #eem.action_syslog("config changed")
     #logSpark('config changed')
     if not sanity() and os.path.exists(PY_BACKUP):
-        result = cli('configure replace {bak} force'.format(bak=BAK))
+        result = cli('configure replace {bak} force'.format(bak=BACKUP))
         eem.action_syslog(result, priority=3)
+        sys.exit(0)
     try:
         get_diff()
     except IOError as e:
