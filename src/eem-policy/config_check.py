@@ -47,7 +47,7 @@ def get_diff():
     if os.path.exists(PY_BACKUP):
         diffs = cli('show archive config diff {bak} system:running-config'.format(bak=BACKUP))
         if 'No changes were found' in diffs:
-            #eem.action_syslog('No changes',priority=5)
+            eem.action_syslog('No changes',priority=5)
             return
         diff_lines = re.split(r'\r?\n', diffs)
         msg = 'Configuration differences between the running config and last backup:\n'
