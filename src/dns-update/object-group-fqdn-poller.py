@@ -10,11 +10,23 @@ from cli import cli
 from cli import configure
 
 
-DEBUG = False
+'''
+This code is executed as a daemon and takes no parameters.
+It periodically fetch all object-groups starting with FQDN-*
+and sync it up with the corresponding IPs, respecting records TTL
 
-auth = resolver.query('dell.com', 'NS')
-for server in auth:
-	print(server)
+IOS-XE does not allow creation of empty object-groups, so addition
+of new FQDN based objects can be done as the following:
+
+  object-group network FQDN-<host.domain.com>
+    host 127.0.0.1
+
+After the first iteration 127.0.0.1 will be replaced by the resolved IP(s)
+'''
+
+
+
+DEBUG = False
 
 
 def log(message, severity):
@@ -85,7 +97,7 @@ def main(argv):
 			for ip in exclude:
 				object_group_configure(fqdn,ip,OBJECT_GROUP_DEL,"removing")
 
-		# Sleep for minimum record TTL
+		# Sleep for minimum record TTL -- NEED FIX: answers.rrset.ttl = time for resolver cache to expire, not original TTL
 		print("Sleeping %s" % (MIN_TTL))
 		time.sleep(MIN_TTL)
 
