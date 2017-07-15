@@ -35,7 +35,7 @@ def log(message, severity):
 
 def dns_lookup(name):
     if DEBUG:
-    	log("Looking up %s" % name, 5)
+        log("Looking up %s" % name, 5)
 
     try:
         answers = resolver.query(name, 'A')
@@ -52,12 +52,12 @@ def dns_lookup(name):
 
 
 def object_group_lookup(fqdn):
-	ips = cli("show object-group name FQDN-%s | i host" % (fqdn)).split('\n')
-	return [x.split("host ")[1] for x in ips if x]
+    ips = cli("show object-group name FQDN-%s | i host" % (fqdn)).split('\n')
+    return [x.split("host ")[1] for x in ips if x]
 
 
 def object_group_configure(fqdn,ip,template,action):
-	localtime = time.asctime(time.localtime(time.time()))
+    localtime = time.asctime(time.localtime(time.time()))
     remark = "Added %s @%s" % (ip,localtime)
     responses = configure(template % (fqdn,ip))
     success = reduce (lambda x, y : x and y, [r.success for r in responses])
@@ -66,41 +66,41 @@ def object_group_configure(fqdn,ip,template,action):
 
 
 def main(argv):
-	MIN_TTL = 30
+    MIN_TTL = 30
 
-	OBJECT_GROUP_ADD = """object-group network FQDN-%s\n host %s\n"""
-	OBJECT_GROUP_DEL = """object-group network FQDN-%s\n no host %s\n"""
+    OBJECT_GROUP_ADD = """object-group network FQDN-%s\n host %s\n"""
+    OBJECT_GROUP_DEL = """object-group network FQDN-%s\n no host %s\n"""
 
-	while True:
+    while True:
 
-		# Fetch current FQDN object groups
-		object_groups = cli("show object-group | i FQDN-").split('\n')
-		fqdns = [x.split("FQDN-")[1] for x in object_groups if x]
+        # Fetch current FQDN object groups
+        object_groups = cli("show object-group | i FQDN-").split('\n')
+        fqdns = [x.split("FQDN-")[1] for x in object_groups if x]
 
-		for fqdn in fqdns:
-			# DNS Lookup
-			ttl, resolved_ips = dns_lookup(fqdn)
+        for fqdn in fqdns:
+            # DNS Lookup
+            ttl, resolved_ips = dns_lookup(fqdn)
 
-			# Polling interval should consider the minimum original TTL
-			if ttl < MIN_TTL:
-				MIN_TTL = ttl + 1
+            # Polling interval should consider the minimum original TTL
+            if ttl < MIN_TTL:
+                MIN_TTL = ttl + 1
 
-			# Compare resolved IPs vs. object group IPs
-			object_group_ips  = object_group_lookup(fqdn)
-			include 		  = list(set(resolved_ips) - set(object_group_ips))
-			exclude			  = list(set(object_group_ips) - set(resolved_ips))
+            # Compare resolved IPs vs. object group IPs
+            object_group_ips  = object_group_lookup(fqdn)
+            include           = list(set(resolved_ips) - set(object_group_ips))
+            exclude           = list(set(object_group_ips) - set(resolved_ips))
 
-			# Synchronize config based on DNS Lookup IPs
-			for ip in include:
-				object_group_configure(fqdn,ip,OBJECT_GROUP_ADD,"adding")
+            # Synchronize config based on DNS Lookup IPs
+            for ip in include:
+                object_group_configure(fqdn,ip,OBJECT_GROUP_ADD,"adding")
 
-			for ip in exclude:
-				object_group_configure(fqdn,ip,OBJECT_GROUP_DEL,"removing")
+            for ip in exclude:
+                object_group_configure(fqdn,ip,OBJECT_GROUP_DEL,"removing")
 
-		# Sleep for minimum record TTL -- NEED FIX: answers.rrset.ttl = time for resolver cache to expire, not original TTL
-		print("Sleeping %s" % (MIN_TTL))
-		time.sleep(MIN_TTL)
+        # Sleep for minimum record TTL -- NEED FIX: answers.rrset.ttl = time for resolver cache to expire, not original TTL
+        print("Sleeping %s" % (MIN_TTL))
+        time.sleep(MIN_TTL)
 
 
 if __name__ == "__main__":
-	main(sys.argv[1:])
+    main(sys.argv[1:])
