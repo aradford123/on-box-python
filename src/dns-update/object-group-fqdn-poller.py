@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
 import time
+import subprocess
 from dns import reversename, resolver
 from dns.resolver import NXDOMAIN
 from dns.resolver import NoAnswer
@@ -23,13 +24,6 @@ of new FQDN based objects can be done as the following:
 
 After the first iteration 127.0.0.1 will be replaced by the resolved IP(s)
 '''
-
-UPDATE_SCRIPT_FIRING_COMMANDS = """
-event manager applet FQDN-POLLER
- event timer countdown time %s
- action 1.0 cli command "enable"
- action 1.1 cli command "guestshell run fqdn-poller
-"""
 
 DEBUG = False
 
@@ -70,12 +64,14 @@ def object_group_configure(fqdn,ip,template,action):
     log("RESOLVER(%s): %s IP: %s - status: %s" % (fqdn, action, ip, status), 5)
 
 def reschedule(seconds):
-    '''
-    set an EEM countdown timer to run the script again
-    :param seconds:
-    :param *args: the initial args that were passed to the script
-    :return:
-    '''
+
+    UPDATE_SCRIPT_FIRING_COMMANDS = """
+event manager applet FQDN-POLLER
+ event timer watchdog time %s
+ action 1.0 cli command "enable"
+ action 1.1 cli command "guestshell run /home/guestshell/fqdn-poller
+"""
+
     responses = configure(UPDATE_SCRIPT_FIRING_COMMANDS % (seconds))
     success = reduce(lambda x, y: x and y, [r.success for r in responses])
     status = "Success" if success else "Fail"
@@ -88,6 +84,10 @@ def main(argv):
 
     OBJECT_GROUP_ADD = """object-group network FQDN-%s\n host %s\n"""
     OBJECT_GROUP_DEL = """object-group network FQDN-%s\n no host %s\n"""
+
+    # Fix guestshell resolvers
+    p = subprocess.Popen("printf \"nameserver 10.100.0.9\nnameserver 10.104.0.9\n\" | sudo tee /etc/resolv.conf", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
 
     # Fetch current FQDN object groups
     object_groups = cli("show object-group | i FQDN-").split('\n')
