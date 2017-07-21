@@ -31,6 +31,13 @@ def getRoomId(roomName, token):
     return room_id
 
 def postMessage(message, roomId, token):
+    '''
+    sends a message to the room.  Uses the "hostname" of the device to indicate where the message originated
+    :param message:
+    :param roomId:
+    :param token:
+    :return:
+    '''
     try:
         hostname = cli("show run | inc hostname").split()[1]
     except IndexError:

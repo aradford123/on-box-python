@@ -88,9 +88,6 @@ event manager applet DNS_update
     action 1.0 cli command "enable"
     action 1.1 cli command "guestshell run python %s
 """
-
-    ### FIXME.. argv[0] will need to be fixedup if there is a bootflash: in it.
-
     responses = configure(UPDATE_SCRIPT_FIRING_COMMANDS % (seconds, " ".join(args)))
     success = reduce(lambda x, y: x and y, [r.success for r in responses])
     status = "Success" if success else "Fail"

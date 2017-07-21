@@ -42,6 +42,8 @@ def sanity():
     Sanity check to see if device is working properly.   quick check of an IP Address, but could be much more
     :return:
     '''
+    # will return the following if shutdown managment IP address
+    # '\n% VRF Mgmt-vrf does not have a usable source address\n'
     # result = cli('ping vrf Mgmt-vrf ip 10.10.10.100')
     result = cli('ping 1.1.1.1')
     eem.action_syslog('Sanity' + result, priority=3)

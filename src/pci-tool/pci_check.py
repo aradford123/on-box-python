@@ -12,8 +12,13 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.par
 from utils.spark_utils import getRoomId, postMessage
 
 
-
+SPARKROOM = "PCI"
 def is_idle_value(string):
+    '''
+    looks at the string to determine idle state.  never is also a valid entry.
+    :param string:
+    :return:
+    '''
     # can be 'never' or 00:00:00 or 7d23h etc
     match = re.match(r'([n]+)d.*|(never)', string)
     if match:
@@ -24,6 +29,12 @@ def is_idle_value(string):
 
 
 def is_idle(input_time, output_time):
+    '''
+    decided if the interface has been idle for more than seven days.
+    :param input_time:
+    :param output_time:
+    :return:
+    '''
     return is_idle_value(input_time) and is_idle_value(output_time)
 
 def log(message, severity):
@@ -31,9 +42,14 @@ def log(message, severity):
     cli('send log %d "%s"' % (severity, message))
 
 def spark(message):
+    '''
+    If there is a spark token in the environment, send a message to Cisco Spark
+    :param message:
+    :return:
+    '''
     sparktoken = os.environ.get("SPARKTOKEN")
     if sparktoken is not None:
-        roomId = getRoomId("PCI", sparktoken)
+        roomId = getRoomId(SPARKROOM, sparktoken)
         postMessage('\n```\n' + message +'\n```', roomId, sparktoken)
 
 def apply_commands(commands):
@@ -48,7 +64,7 @@ def process(re_table, apply_change):
     re_table.Reset()
 
     output = cli("show int | inc Last in|line pro")
-    print (output)
+    #print (output)
     localtime = time.asctime(time.localtime(time.time()))
     description = "description PCIShutdown: %s" % localtime
     fsm_results = re_table.ParseText(output)
