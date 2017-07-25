@@ -30,16 +30,21 @@ new FQDN based objects must be done as the following:
 After first iteration 127.0.0.1 will be replaced by the resolved IP(s)
 '''
 
-DEBUG_LOG   = False
-MAX_THREADS = 8
-MIN_TTL     = 30
+class config():
+    DEBUG_LOG   = False
+    MAX_THREADS = 8
+    MIN_TTL     = 30
+    RESOLVERS = [
+        "8.8.8.8",
+        "8.8.4.4"
+]
 
 
 def log(message, severity):
     cli('send log %d "%s"' % (severity, message))
 
 
-def dns_lookup_Parallel(object_groups, threads=MAX_THREADS):
+def dns_lookup_Parallel(object_groups, threads=config.MAX_THREADS):
     pool = ThreadPool(threads)
     results = pool.map(dns_lookup, object_groups)
     pool.close()
@@ -48,9 +53,8 @@ def dns_lookup_Parallel(object_groups, threads=MAX_THREADS):
 
 
 def dns_lookup(object_group):
-    global DEBUG_LOG
     fqdn = objects[object_group]["fqdn"]
-    if DEBUG_LOG:
+    if config.DEBUG_LOG:
         log("Looking up %s" % fqdn, 5)
 
     try:
@@ -113,7 +117,7 @@ def find_ttl(zone):
         pass
 
     # Return default TTL in case not found
-    return MIN_TTL
+    return config.MIN_TTL
 
 
 def restconf(method,resource):
@@ -193,7 +197,6 @@ object-group network %s
 
 
 def reschedule(seconds):
-    global DEBUG_LOG
     UPDATE_SCRIPT_FIRING_COMMANDS = """
 event manager applet FQDN-POLLER
  event timer watchdog time %s
@@ -203,15 +206,14 @@ event manager applet FQDN-POLLER
     responses = configure(UPDATE_SCRIPT_FIRING_COMMANDS % (seconds))
     success = reduce(lambda x, y: x and y, [r.success for r in responses])
     status = "Success" if success else "Fail"
-    if DEBUG_LOG:
+    if config.DEBUG_LOG:
         log("reschedule in : %s seconds: status: %s" % (str(seconds), status), 5)
 
 
 
 def main():
-    global MIN_TTL
     # Fix guestshell resolvers
-    p = subprocess.Popen("printf \"nameserver 10.100.0.9\nnameserver 10.104.0.9\n\" | sudo tee /etc/resolv.conf", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p = subprocess.Popen("printf \"nameserver %s\nnameserver %s\n\" | sudo tee /etc/resolv.conf" % (config.RESOLVERS[0],config.RESOLVERS[1]), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     # Fetch and resolve FQDN object groups
     global objects
@@ -235,10 +237,12 @@ def main():
         # Polling interval should consider the minimum original TTL
         ttl = objects[item]["ttl"]
 
-        if ttl < MIN_TTL >= 5:
-            MIN_TTL = ttl + 1
+        min_ttl = config.MIN_TTL
 
-    reschedule(MIN_TTL)
+        if ttl < min_ttl >= 5:
+            min_ttl = ttl + 1
+
+    reschedule(min_ttl)
 
 
 if __name__ == "__main__":
