@@ -72,7 +72,7 @@ The guestshell does not have dns setup, so the first thing to do is to edit /etc
 
 Use you favorite unix editor, or you can just run the following command to update the file.
 ```buildoutcfg
-echo -e "nameserver 8.8.8.8\ndomain cisco.com" > /etc/resolv.conf
+echo  'echo -e "nameserver 8.8.8.8\ndomain cisco.com" > /etc/resolv.conf' | sudo sh
 
 ```
 Now you should have access to the internet.  If your device needs to connect out via a proxy, then you will need to 

@@ -84,8 +84,8 @@ If you want to change the domains that are being monitored, you should re-run th
 The EEM config will be overwritten with a new countdown and correct command line arguments.
 
 
-##fqdn-poller
-is a slightly different version of the script.  It was written by xxx
+## fqdn-poller
+is a slightly different version of the script.  It was written by Vicente De Luca
 It uses Object groups (which are not supported on switches) 
 and derives the domains to poll based on the name of the object group.  
 The IP address are then added to the object group.
